@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stamp2Fly — Reddit Growth Strategy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0f0a;
+    --bg2: #141710;
+    --bg3: #1c201a;
+    --surface: #222620;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.14);
+    --accent: #b8f050;
+    --accent-dim: rgba(184,240,80,0.12);
+    --accent-mid: rgba(184,240,80,0.25);
+    --orange: #ff7a35;
+    --orange-dim: rgba(255,122,53,0.12);
+    --blue: #5fb8ff;
+    --blue-dim: rgba(95,184,255,0.12);
+    --text: #e8eae4;
+    --text-secondary: #8a9080;
+    --text-dim: #555d4a;
+    --do: #b8f050;
+    --dont: #ff5e5e;
+    --do-bg: rgba(184,240,80,0.07);
+    --dont-bg: rgba(255,94,94,0.07);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    padding: 80px 40px 60px;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .header-glow {
+    position: absolute;
+    top: -120px;
+    left: -80px;
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(184,240,80,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 36px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 99px;
+  }
+
+  .meta-chip .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* NAV TABS */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    border-bottom: 0.5px solid var(--border);
+    padding-bottom: 0;
+  }
+
+  .tab-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 18px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: 0.03em;
+    margin-bottom: -1px;
+  }
+
+  .tab-btn:hover { color: var(--text-secondary); }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* PANEL */
+  .panel { display: none; animation: fadeIn .25s ease; }
+  .panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION HEADING */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color .2s;
+  }
+
+  .card:hover { border-color: var(--border-hover); }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .badge-green  { background: var(--accent-dim); color: var(--accent); }
+  .badge-orange { background: var(--orange-dim); color: var(--orange); }
+  .badge-blue   { background: var(--blue-dim);   color: var(--blue); }
+  .badge-gray   { background: var(--surface); color: var(--text-secondary); }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* LIST ITEMS */
+  .item {
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .item:last-child { border-bottom: none; padding-bottom: 0; }
+  .item:first-child { padding-top: 0; }
+
+  .item strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* DO / DON'T */
+  .do-dont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) { .do-dont { grid-template-columns: 1fr; } }
+
+  .do-box {
+    border-radius: 12px;
+    padding: 18px;
+    border: 0.5px solid transparent;
+  }
+
+  .do-box.do {
+    background: var(--do-bg);
+    border-color: rgba(184,240,80,0.15);
+  }
+
+  .do-box.dont {
+    background: var(--dont-bg);
+    border-color: rgba(255,94,94,0.15);
+  }
+
+  .do-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .do-box.do .do-label { color: var(--do); }
+  .do-box.dont .do-label { color: var(--dont); }
+
+  .do-line {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 4px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .do-line::before {
+    content: '→';
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 12px;
+  }
+
+  .do-box.do .do-line::before { color: var(--do); }
+  .do-box.dont .do-line::before { color: var(--dont); content: '✕'; }
+
+  /* PROGRESS BARS */
+  .progress-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  .progress-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-width: 140px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--surface);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--accent);
+    transition: width 0.8s cubic-bezier(.4,0,.2,1);
+  }
+
+  .progress-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .tl-item:last-child { margin-bottom: 0; }
+
+  .tl-dot {
+    position: absolute;
+    left: -21px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--bg2);
+    border: 1.5px solid var(--accent);
+  }
+
+  .tl-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .tl-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* SUBREDDIT GRID */
+  .sub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+
+  .sub-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: border-color .2s, background .2s;
+    cursor: default;
+  }
+
+  .sub-card:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .sub-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .sub-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* PRIORITY BADGE */
+  .priority-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .priority-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .p1 { background: var(--accent-dim); color: var(--accent); }
+  .p2 { background: var(--orange-dim); color: var(--orange); }
+
+  /* BIG NUMBER CARDS */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 500px) { .stat-row { grid-template-columns: 1fr; } }
+
+  .stat-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* COMMENT ANATOMY */
+  .comment-anatomy {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    font-family: 'DM Sans', monospace;
+    margin-bottom: 16px;
+  }
+
+  .comment-line {
+    display: flex;
+    gap: 14px;
+    padding: 6px 0;
+    border-bottom: 0.5px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .comment-line:last-child { border-bottom: none; }
+
+  .comment-tag {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    min-width: 50px;
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+
+  .comment-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  .comment-text strong { color: var(--accent); font-style: normal; font-weight: 500; }
+
+  /* CONVERSION PATH */
+  .conv-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .conv-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .conv-step:last-child { border-bottom: none; }
+
+  .conv-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-dim);
+    width: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .conv-body .conv-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .conv-body .conv-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ACCENT CALLOUT */
+  .callout {
+    background: var(--accent-dim);
+    border: 0.5px solid rgba(184,240,80,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .callout strong { color: var(--accent); font-weight: 500; }
+
+  /* WARNING CALLOUT */
+  .warn {
+    background: var(--orange-dim);
+    border: 0.5px solid rgba(255,122,53,0.2);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .warn strong { color: var(--orange); font-weight: 500; }
+
+  /* FOOTER */
+  footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+    border-top: 0.5px solid var(--border);
+    padding-top: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+
+  .footer-brand span { color: var(--accent); }
+
+  .footer-note {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* TWO COL */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    header, main { padding-left: 20px; padding-right: 20px; }
+    footer { padding-left: 20px; padding-right: 20px; }
+    header { padding-top: 48px; padding-bottom: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-glow"></div>
+  <div class="eyebrow">Reddit Growth Playbook</div>
+  <h1>Grow <span>Stamp2Fly</span><br>on Reddit — the right way</h1>
+  <p class="header-sub">A complete organic growth strategy for building trust, authority, and inbound leads in visa & immigration communities. No spam. No shortcuts.</p>
+  <div class="header-meta">
+    <div class="meta-chip"><div class="dot"></div>Visa &amp; Immigration niche</div>
+    <div class="meta-chip"><div class="dot"></div>Founder-led strategy</div>
+    <div class="meta-chip"><div class="dot"></div>Long-term authority building</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- TAB NAV -->
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" onclick="show('algo')"   role="tab">How Reddit works</button>
+    <button class="tab-btn"        onclick="show('subs')"   role="tab">Best subreddits</button>
+    <button class="tab-btn"        onclick="show('karma')"  role="tab">Karma &amp; comments</button>
+    <button class="tab-btn"        onclick="show('content')" role="tab">Content strategy</button>
+    <button class="tab-btn"        onclick="show('founder')" role="tab">Founder branding</button>
+    <button class="tab-btn"        onclick="show('leads')"  role="tab">Lead generation</button>
+  </nav>
+
+  <!-- ========== PANEL 1: ALGORITHM ========== -->
+  <div id="p-algo" class="panel active" role="tabpanel">
+    <p class="section-title">Understanding Reddit's algorithm</p>
+    <p class="section-desc">Reddit rewards consistency, expertise, and community-first behavior. Game the algorithm by genuinely helping people.</p>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-green">Ranking factors</span><span class="card-title">What Reddit's algorithm actually measures</span></div>
+      <div class="progress-item"><span class="progress-label">Upvote velocity (first hour)</span><div class="progress-track"><div class="progress-fill" style="width:92%"></div></div><span class="progress-val">Critical</span></div>
+      <div class="progress-item"><span class="progress-label">Comment depth &amp; replies</span><div class="progress-track"><div class="progress-fill" style="width:80%"></div></div><span class="progress-val">High</span></div>
+      <div class="progress-item"><span class="progress-label">Account age + karma</span><div class="progress-track"><div class="progress-fill" style="width:68%"></div></div><span class="progress-val">Medium</span></div>
+      <div class="progress-item"><span class="progress-label">Post quality signals</span><div class="progress-track"><div class="progress-fill" style="width:58%"></div></div><span class="progress-val">Medium</span></div>
+      <div class="progress-item"><span class="progress-label">External link karma</span><div class="progress-track"><div class="progress-fill" style="width:25%"></div></div><span class="progress-val">Low</span></div>
+    </div>
+
+    <div class="callout"><strong>Key insight:</strong> A 2-hour-old post with 10 upvotes outranks a 12-hour-old post with 50. Post timing and early engagement matter more than raw upvotes.</div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-orange">New accounts</span><span class="card-title">What happens to fresh Reddit accounts in visa subs</span></div>
+      <div class="item"><strong>Shadow filtering:</strong> Many immigration subs run automods that hold new account posts for manual review — often for days or never</div>
+      <div class="item"><strong>Link restrictions:</strong> Most subs block links until you have 50–100 subreddit karma. Never include links in first 30 days</div>
+      <div class="item"><strong>Downvote risk:</strong> Communities are savvy about self-promotion — one promotional-sounding comment tanks your credibility permanently</div>
+      <div class="item"><strong>The solution:</strong> Comments-only for the first 6 weeks. Build in-sub karma before attempting posts</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-blue">Timeline</span><span class="card-title">Realistic growth phases for Stamp2Fly</span></div>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Month 1–2 — Trust building</div><div class="tl-desc">Pure comments only. Target 5–7 per week. Build 200+ comment karma. Get consistently recognized in 2–3 subs. Zero promotional activity.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Month 3–4 — Content introduction</div><div class="tl-desc">Start 1–2 educational posts per week. Checklists, timelines, myth-busters. Add a free resource link in your bio only after 200 karma.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Month 5–6 — Authority positioning</div><div class="tl-desc">You're now a recognized commenter. People tag you in threads. Other commenters cite your posts. DMs begin arriving organically.</div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-title">Month 7+ — Lead generation</div><div class="tl-desc">Soft service mentions in appropriate contexts. Subreddit wiki contributions. AMA potential. Consistent inbound DM flow of 1–4/month.</div></div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num">6 wks</div><div class="stat-label">Before your first post</div></div>
+      <div class="stat-card"><div class="stat-num">200+</div><div class="stat-label">Karma before linking anything</div></div>
+      <div class="stat-card"><div class="stat-num">7 hrs</div><div class="stat-num" style="font-size:14px;color:var(--text-secondary);font-family:'DM Sans'">Best posting window<br><span style="font-size:12px">7–9am or 8–11pm IST</span></div></div>
+    </div>
+  </div>
+
+  <!-- ========== PANEL 2: SUBREDDITS ========== -->
+  <div id="p-subs" class="panel" role="tabpanel">
+    <p class="section-title">Where to build your presence</p>
+    <p class="section-desc">Focus on depth in 3–4 subs before expanding. Being well-known in r/USVisaIndians beats being unknown in 15 subreddits.</p>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="priority-row" style="margin:0"><div class="priority-num p1">1</div></div>
+        <span class="card-title">Core visa &amp; immigration subreddits</span>
+      </div>
+      <div class="sub-grid">
+        <div class="sub-card"><div class="sub-name">r/USVisaIndians</div><div class="sub-meta">High intent • Your current base ✓ • Keep daily presence</div></div>
+        <div class="sub-card"><div class="sub-name">r/visas</div><div class="sub-meta">Broad queries • Taiwan, Japan, Schengen • Active ✓</div></div>
+        <div class="sub-card"><div class="sub-name">r/immigration</div><div class="sub-meta">US + global audience • Larger reach</div></div>
+        <div class="sub-card"><div class="sub-name">r/f1visa</div><div class="sub-meta">Student visas • High need, low supply of good advisors</div></div>
+        <div class="sub-card"><div class="sub-name">r/b1b2visa</div><div class="sub-meta">Tourist &amp; business visas • High volume</div></div>
+        <div class="sub-card"><div class="sub-name">r/schengen</div><div class="sub-meta">European travel • Growing Indian audience</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="priority-row" style="margin:0"><div class="priority-num p2">2</div></div>
+        <span class="card-title">Study abroad &amp; travel subreddits</span>
+      </div>
+      <div class="sub-grid">
+        <div class="sub-card"><div class="sub-name">r/studyabroad</div><div class="sub-meta">Students • Visa + application combo questions</div></div>
+        <div class="sub-card"><div class="sub-name">r/IWantOut</div><div class="sub-meta">Emigration seekers • Country guides get massive upvotes</div></div>
+        <div class="sub-card"><div class="sub-name">r/digitalnomad</div><div class="sub-meta">Remote workers + visa questions</div></div>
+        <div class="sub-card"><div class="sub-name">r/solotravel</div><div class="sub-meta">Travel docs questions • Casual, conversational tone needed</div></div>
+        <div class="sub-card"><div class="sub-name">r/india</div><div class="sub-meta">Large audience • Visa questions appear frequently</div></div>
+        <div class="sub-card"><div class="sub-name">r/delhi / r/mumbai</div><div class="sub-meta">Local visa center &amp; appointment queries</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-orange">Tactics</span><span class="card-title">Sub-specific engagement strategies</span></div>
+      <div class="item"><strong>r/USVisaIndians:</strong> Increase to 1 comment/day. Focus on B1/B2 refusal recovery, strong ties evidence, financial docs. This is your home base.</div>
+      <div class="item"><strong>r/visas:</strong> Answer quickly on Taiwan, Japan, Schengen, UK queries. Speed matters — first solid answer usually gets the upvotes</div>
+      <div class="item"><strong>r/studyabroad:</strong> Combine university application + visa context. Underserved angle that positions Stamp2Fly's study abroad strength</div>
+      <div class="item"><strong>r/IWantOut:</strong> Write country-specific migration guides as posts — these get saved, shared, and build search authority inside Reddit</div>
+      <div class="item"><strong>r/india:</strong> Engage naturally when visa topics surface — mention expertise conversationally, never as a pitch</div>
+    </div>
+
+    <div class="warn"><strong>Don't spread thin:</strong> Engaging shallowly in 12 subreddits is worse than being deeply known in 3. Community members remember repeat helpful commenters. Depth builds authority faster than breadth.</div>
+  </div>
+
+  <!-- ========== PANEL 3: KARMA & COMMENTS ========== -->
+  <div id="p-karma" class="panel" role="tabpanel">
+    <p class="section-title">Building karma the right way</p>
+    <p class="section-desc">Comment karma in visa subs is more valuable than total karma. Every comment is a trust deposit.</p>
+
+    <div class="do-dont">
+      <div class="do-box do">
+        <div class="do-label">Do this</div>
+        <div class="do-line">Answer the exact question asked — not a related one</div>
+        <div class="do-line">Add 1 non-obvious insight beyond the basic answer</div>
+        <div class="do-line">Use "In my experience…" or "I've seen this go both ways…" framing</div>
+        <div class="do-line">Cite specific consulates, centers, timelines</div>
+        <div class="do-line">Share real processing data ("3 working days at TECC Mumbai")</div>
+        <div class="do-line">Ask a single focused follow-up question when helpful</div>
+        <div class="do-line">Respond to other commenter's corrections graciously</div>
+      </div>
+      <div class="do-box dont">
+        <div class="do-label">Never do this</div>
+        <div class="do-line">Mention Stamp2Fly in comments (months 1–4)</div>
+        <div class="do-line">Post links in first 30 days</div>
+        <div class="do-line">Copy-paste the same answer across threads</div>
+        <div class="do-line">Use formal, corporate, or AI-sounding language</div>
+        <div class="do-line">Dump 10 comments in one session — looks like a bot</div>
+        <div class="do-line">End with "feel free to DM me" in early months</div>
+        <div class="do-line">Over-qualify everything with "consult a lawyer"</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-green">Comment formula</span><span class="card-title">Anatomy of a high-karma comment</span></div>
+      <div class="comment-anatomy">
+        <div class="comment-line">
+          <span class="comment-tag">Line 1</span>
+          <span class="comment-text"><strong>Direct answer:</strong> "Yes, Taiwan TRC takes one working day at TECC Mumbai."</span>
+        </div>
+        <div class="comment-line">
+          <span class="comment-tag">Line 2–3</span>
+          <span class="comment-text"><strong>Nuance or caveat:</strong> "The express counter closes at 11am though, so arrive before that. Standard takes 2–3 days."</span>
+        </div>
+        <div class="comment-line">
+          <span class="comment-tag">Line 4</span>
+          <span class="comment-text"><strong>Experience signal (optional):</strong> "I've seen delays during peak season (Dec–Jan) — worth factoring in if you're close to travel dates."</span>
+        </div>
+        <div class="comment-line">
+          <span class="comment-tag">Never</span>
+          <span class="comment-text" style="color:var(--dont)">Ending with: "Feel free to DM me!" or "We help with this at [company name]"</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-blue">Cadence</span><span class="card-title">Posting frequency &amp; timing</span></div>
+      <div class="item"><strong>Comments per week:</strong> 5–7 minimum, spread across 3–4 separate days — never all in one session</div>
+      <div class="item"><strong>Best times (IST):</strong> 7–9am (catches US west coast evening) and 8–11pm (catches US morning and UK evening)</div>
+      <div class="item"><strong>Weekend peak:</strong> Saturday 8–11am IST — highest immigration sub activity from Indian diaspora abroad</div>
+      <div class="item"><strong>Posts (after 6 weeks):</strong> 1–2 per week maximum. Tuesday–Thursday tend to outperform Monday and Friday</div>
+      <div class="item"><strong>Respond to replies:</strong> Always reply to anyone who comments on your posts within 4 hours when possible — comment depth boosts ranking</div>
+    </div>
+
+    <div class="callout"><strong>Niche karma matters more than total karma.</strong> 150 karma in r/USVisaIndians carries more weight than 1,000 karma from r/AskReddit. Build where your audience lives.</div>
+  </div>
+
+  <!-- ========== PANEL 4: CONTENT ========== -->
+  <div id="p-content" class="panel" role="tabpanel">
+    <p class="section-title">Content that builds authority</p>
+    <p class="section-desc">Posts that educate, save time, and reduce anxiety perform best in visa communities. Format matters as much as content.</p>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-green">Post formats</span><span class="card-title">Content types that earn upvotes in visa subs</span></div>
+      <div class="item"><strong>Checklist posts:</strong> "Complete Japan tourist visa checklist for Indians (2025 updated)" — gets saved and bookmarked, drives long-tail traffic for months</div>
+      <div class="item"><strong>Experience write-ups:</strong> "I helped someone get a Schengen visa after 2 rejections — here's exactly what changed" — high trust, high engagement</div>
+      <div class="item"><strong>Timeline posts:</strong> "B2 visa timeline: applied Jan 5, interview Jan 28, approved Feb 3 — full breakdown" — data posts get pinned in subreddit wikis</div>
+      <div class="item"><strong>FAQ explainers:</strong> "Why sudden bank deposits hurt your visa application (and how to explain them)" — solves a common pain clearly</div>
+      <div class="item"><strong>Myth-busting:</strong> "3 things consulates don't actually care about (that everyone worries over)" — pattern-interrupting titles earn clicks</div>
+      <div class="item"><strong>Seasonal alerts:</strong> "Schengen appointment slots are filling up fast — apply 90+ days before summer travel" — timeliness drives velocity</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-orange">Storytelling</span><span class="card-title">How to write posts that build trust</span></div>
+      <div class="item"><strong>Name the outcome first:</strong> "Short answer: ₹3 lakh is fine for Japan solo. Here's why (and the one exception)" — Reddit readers scan, reward clarity</div>
+      <div class="item"><strong>Start with the struggle:</strong> "This is a question I see 10 times a week — and the answer surprises most people" — invitation to keep reading</div>
+      <div class="item"><strong>Use specificity:</strong> Consulate names, document numbers, exact timelines. Vague advice gets ignored; specific advice gets saved</div>
+      <div class="item"><strong>End with a pattern:</strong> "The mistake here is X — most rejections I've seen come from this same gap" — positions you as experienced without claiming authority</div>
+      <div class="item"><strong>Avoid disclaimers upfront:</strong> Don't start with "I'm not a lawyer but..." — it immediately reduces confidence in everything that follows</div>
+    </div>
+
+    <div class="two-col">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-head"><span class="badge badge-blue">Avoid</span></div>
+        <div class="item"><strong>Success stories without caveats</strong> — looks promotional</div>
+        <div class="item"><strong>Posts that only make sense if you hire someone</strong></div>
+        <div class="item"><strong>Guaranteed outcomes language</strong> — visa decisions are discretionary</div>
+        <div class="item"><strong>AI-sounding generic answers</strong> — communities spot this fast</div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-head"><span class="badge badge-green">Always include</span></div>
+        <div class="item"><strong>Specific countries, consulates, or centers</strong></div>
+        <div class="item"><strong>Honest caveats</strong> — "this varies by officer discretion"</div>
+        <div class="item"><strong>Update dates</strong> — "as of March 2025" builds credibility</div>
+        <div class="item"><strong>Genuine uncertainty</strong> when you're not sure — trust builder</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PANEL 5: FOUNDER BRANDING ========== -->
+  <div id="p-founder" class="panel" role="tabpanel">
+    <p class="section-title">Founder-led brand strategy</p>
+    <p class="section-desc">On Reddit, a person builds trust faster than a brand. You are the product before Stamp2Fly is.</p>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-green">Profile optimization</span><span class="card-title">Fix your profile today (u/Wise_Yak6816)</span></div>
+      <div class="item"><strong>Display name:</strong> Keep it personal — not "Stamp2Fly Official." Reddit communities reject branded handles instinctively</div>
+      <div class="item"><strong>Bio (currently blank):</strong> Write something like: "Visa and immigration nerd. Helped hundreds of people navigate study abroad, travel docs, and immigration. Ask me anything."</div>
+      <div class="item"><strong>Avatar:</strong> Use a real photo or illustrated portrait — not a logo. Personal avatars receive 30–40% more DM replies than logo avatars</div>
+      <div class="item"><strong>Banner:</strong> A world map or subtle "visas simplified" tagline works — brand reference without naming the company directly</div>
+      <div class="item"><strong>Link in bio:</strong> Only after 90 days + 200 karma. Link to a free resource (checklist PDF, guide) — not the Stamp2Fly homepage</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-orange">Personal narrative</span><span class="card-title">The founder story that works on Reddit</span></div>
+      <div class="item"><strong>Origin hook:</strong> Why you started — a personal frustration, a family member's rejection, your own complicated application. Authentic origin stories are the most shared type of content on Reddit</div>
+      <div class="item"><strong>Proof without bragging:</strong> "I've seen hundreds of applications" lands better than "We've processed 500 clients." Individual expertise, not corporate metrics</div>
+      <div class="item"><strong>Vulnerability moment:</strong> Share a case you got wrong or advice you had to revise later — this is the single biggest trust-builder available to an expert</div>
+      <div class="item"><strong>Consistent signal:</strong> Every insightful comment slowly builds the impression: "this person has seen a lot and genuinely cares about helping"</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-blue">Subreddit decision</span><span class="card-title">Should you create r/Stamp2fly now?</span></div>
+      <div class="item"><strong>Not yet.</strong> A subreddit with 0 members and low account history appears abandoned. It signals desperation, not authority</div>
+      <div class="item"><strong>Milestone to hit first:</strong> 500+ comment karma, recognized in 3+ subs, 6 months of consistent engagement</div>
+      <div class="item"><strong>Right approach when ready:</strong> Name it r/IndiaVisaHelp or r/StudyAbroadIndia — community-first name, not brand-first</div>
+      <div class="item"><strong>Grow the subreddit by:</strong> Crossposting your best guides, linking from comment answers when relevant, becoming a trusted mod first</div>
+      <div class="item"><strong>Avoid:</strong> Using the sub primarily to post Stamp2Fly announcements — it will die immediately. 80% community content, 20% original</div>
+    </div>
+
+    <div class="warn"><strong>Biggest mistake founders make on Reddit:</strong> Launching a brand account instead of a personal one. Communities accept helpful individuals. They reject company representatives. Be a person who happens to run a consultancy — not a consultancy that happens to have a Reddit presence.</div>
+  </div>
+
+  <!-- ========== PANEL 6: LEADS ========== -->
+  <div id="p-leads" class="panel" role="tabpanel">
+    <p class="section-title">Converting trust into clients</p>
+    <p class="section-desc">Reddit leads are slow to arrive and high quality when they do. The conversion path is invisible — it happens in someone's head over weeks.</p>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-green">Conversion path</span><span class="card-title">How a Reddit reader becomes a client</span></div>
+      <div class="conv-steps">
+        <div class="conv-step">
+          <div class="conv-num">01</div>
+          <div class="conv-body">
+            <div class="conv-title">High-value comment gets upvotes</div>
+            <div class="conv-desc">You answer a complex question better than anyone else. Upvotes push your comment to the top and make your username visible to hundreds of readers with the same problem.</div>
+          </div>
+        </div>
+        <div class="conv-step">
+          <div class="conv-num">02</div>
+          <div class="conv-body">
+            <div class="conv-title">Curious reader visits your profile</div>
+            <div class="conv-desc">Someone with a complex case checks your history. They see 40+ helpful comments, no promotional posts, consistent expertise across multiple subs. They're impressed.</div>
+          </div>
+        </div>
+        <div class="conv-step">
+          <div class="conv-num">03</div>
+          <div class="conv-body">
+            <div class="conv-title">Bio reads as expert, not salesperson</div>
+            <div class="conv-desc">Your bio says you help with visa questions. There's no pitch. No "book a call" button. Just an open door. This is what makes them trust the DM they're about to send.</div>
+          </div>
+        </div>
+        <div class="conv-step">
+          <div class="conv-num">04</div>
+          <div class="conv-body">
+            <div class="conv-title">Inbound DM arrives</div>
+            <div class="conv-desc">"Hey, I have a complicated situation — can we talk?" This is the moment. The person has already decided they trust you. Your close rate is far higher than any cold outreach.</div>
+          </div>
+        </div>
+        <div class="conv-step">
+          <div class="conv-num">05</div>
+          <div class="conv-body">
+            <div class="conv-title">Soft mention in appropriate context (Month 4+)</div>
+            <div class="conv-desc">When genuinely relevant: "I run a small immigration consultancy — happy to take a proper look at your documents if that would help." One sentence. No pressure.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num">1–4</div><div class="stat-label">Qualified DM leads/month after 5 months</div></div>
+      <div class="stat-card"><div class="stat-num">Very<br>high</div><div class="stat-label">Quality — self-selected, pre-qualified leads</div></div>
+      <div class="stat-card"><div class="stat-num">2 yrs</div><div class="stat-label">How long a top comment keeps generating profile visits</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="badge badge-orange">Mistakes</span><span class="card-title">What kills Reddit growth for new accounts</span></div>
+      <div class="item"><strong>Posting before commenting:</strong> First 30+ actions must be comments. Posts from new accounts are invisible or auto-removed in most visa subs</div>
+      <div class="item"><strong>Karma farming in unrelated subs:</strong> r/memes karma does nothing in r/visas. Build sub-specific karma only in communities where your audience lives</div>
+      <div class="item"><strong>Using a brand username:</strong> "u/Stamp2Fly" signals a corporate account and triggers immediate distrust. Personal accounts win on Reddit, always</div>
+      <div class="item"><strong>Any sock puppet behavior:</strong> Creating a second account to upvote yourself or reply to your own posts gets both accounts permanently banned — Reddit's detection is excellent</div>
+      <div class="item"><strong>Ignoring DMs:</strong> When someone DMs after reading your comments, respond within 24 hours. That's your lead — treat the conversation carefully, not as a sales call</div>
+      <div class="item"><strong>One promotional post early on:</strong> Communities remember. They'll downvote everything you post for months. There's no recovering from it.</div>
+    </div>
+
+    <div class="callout"><strong>Can Reddit generate real visa clients?</strong> Yes — absolutely. Reddit leads are among the highest-quality leads available because they come pre-convinced. They've read your expertise, decided you know what you're talking about, and reached out voluntarily. The only variable is patience: expect 4–5 months before the first DM, and consistent growth from there.</div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-brand">Stamp<span>2Fly</span> — Reddit Strategy Guide</div>
+  <div class="footer-note">Built for organic, trust-first growth. No shortcuts. No spam.</div>
+</footer>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('p-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Animate progress bars on tab switch
+  function animateBars() {
+    document.querySelectorAll('.progress-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0';
+      setTimeout(() => bar.style.width = w, 50);
+    });
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(animateBars, 50));
+  });
+
+  // Initial animation
+  setTimeout(animateBars, 200);
+</script>
+
+</body>
+</html>
